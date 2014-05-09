@@ -1,0 +1,37 @@
+1.ACMAA_Person_Query
+
+# select count(*)
+select ?name ?birthYear ?deathYear ?ident
+from <http://collection.cartermuseum.org>
+where
+{
+?person a crm:E21_Person;
+             crm:P1_is_identified_by ?ident;
+             crm:P92i_was_brought_into_existence_by/crm:P4_has_time-span ?birth;
+             crm:P93i_was_taken_out_of_existence_by/crm:P4_has_time-span ?death.
+?ident rdfs:label ?name.
+OPTIONAL{?birth rdfs:label ?birthYear.}
+OPTIONAL{?death rdfs:label ?deathYear.}
+}
+
+
+2.SM_Person_Query
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+
+SELECT count(*)
+# ?name ?person ?birthDate ?deathDate 
+#from <http://collection.americanart.si.edu>
+from <http://collection.cartermuseum.org>
+WHERE {
+  ?person a crm:E21_Person ;
+      crm:P1_is_identified_by ?ident ;
+      crm:P98i_was_born/crm:P4_has_time-span/crm:P82_at_some_time_within ?birthDate .
+  ?ident rdfs:label ?name .
+  OPTIONAL {
+    ?person a crm:E21_Person ;
+        crm:P100i_died_in/crm:P4_has_time-span/crm:P82_at_some_time_within ?deathDate 
+  }
+} limit 100000
